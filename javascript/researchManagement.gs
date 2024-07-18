@@ -35,12 +35,6 @@ function handleResearchManagement(e) {
     }
   }
 
-  // I列に値が入力された場合、A列から同じ文字列を探してJ列の値をコピー
-  if (column === 9) { // I列
-    const inputValue = range.getValue();
-    searchAndInsertValue(sheet3, 'A', inputValue, 'J', row, 'J');
-  }
-
   // L列とH列にチェックが入った場合の処理
   if ((column === 12 || column === 8) && sheet.getRange(`L${row}`).getValue() === true && sheet.getRange(`H${row}`).getValue() === true) {
     const targetSheet = ss.getSheetByName(sheetName4);
