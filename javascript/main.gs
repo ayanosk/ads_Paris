@@ -16,68 +16,32 @@ function onEdit(e) {
   // トピックID全体管理シートを処理
   if (sheet.getName() === sheetName1) {
     handleTopicManagement(e);
+    if (column === 13) { // M列の編集をチェック
+      handleSheet1Edit(range, sheetName1, sheetName3, sheetName5, sheetName6, sheetName7);
+    }
   }
   
   // 人物管理シートを処理
   if (sheet.getName() === sheetName2) {
     handlePersonManagement(e);
+    if (column === 15) { // O列の編集をチェック
+      handleSheet2Edit(range, sheetName4, sheetName2);
+    }
   }
   
   // 研究報告・実験・査読シートを処理
   if (sheet.getName() === sheetName3) {
     handleResearchManagement(e);
+    if (column === 14) { // N列の編集をチェック
+      handleSheet3Edit(range, sheetName3, sheetName4);
+    }
   }
-  
-  // その他のシートを必要に応じて処理
 }
 
 // 任意のセルの内容を特定のセルにコピーする関数
 function copyValue(sheet, sourceRange, targetRange) {
   const value = sheet.getRange(sourceRange).getValue(); // 入力セルの値を取得
   sheet.getRange(targetRange).setValue(value); // 出力セルに値を設定
-}
-
-// 他のシートの任意のセルに値を送る
-function sendData(sourceSheet, sourceRow, sourceCols, targetSheetName, targetCols, emptyCheckCol) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const targetSheet = ss.getSheetByName(targetSheetName);
-
-  if (!targetSheet) {
-    Logger.log(`シート ${targetSheetName} が見つかりません。`);
-    return;
-  }
-
-  // 元のシートから値を一度に取得
-  const values = sourceCols.map(col => sourceSheet.getRange(`${col}${sourceRow}`).getValue());
-  const concatenatedValues = values.join('|'); // 値を連結して重複チェック用の文字列に変換
-
-  // 重複チェック: 既存のデータを一度に取得してチェック
-  const lastRow = targetSheet.getLastRow();
-  const targetData = targetSheet.getRange(1, targetCols[0].charCodeAt(0) - 'A'.charCodeAt(0) + 1, lastRow, targetCols.length).getValues();
-
-  for (let row = 0; row < lastRow; row++) {
-    const targetValues = targetCols.map((col, index) => targetData[row][index]);
-    const concatenatedTargetValues = targetValues.join('|');
-    if (concatenatedValues === concatenatedTargetValues) {
-      Logger.log('重複データが見つかりました。データは追加されません。');
-      return;
-    }
-  }
-
-  // emptyCheckCol列に値の入っていない最初の行を検出
-  let targetRow = lastRow + 1;
-  const checkColumnData = targetSheet.getRange(1, emptyCheckCol.charCodeAt(0) - 'A'.charCodeAt(0) + 1, lastRow).getValues();
-
-  for (let row = 0; row < lastRow; row++) {
-    if (!checkColumnData[row][0]) {
-      targetRow = row + 1;
-      break;
-    }
-  }
-
-  // データを一度に追加
-  const outputRange = targetSheet.getRange(targetRow, targetCols[0].charCodeAt(0) - 'A'.charCodeAt(0) + 1, 1, targetCols.length);
-  outputRange.setValues([values]);
 }
 
 // 指定したセルを入力不可にし、背景色をlightgrayに変更する関数（デフォルト）
@@ -123,4 +87,3 @@ function setDropdownList(sheet, range, options) {
       .build();
   sheet.getRange(range).setDataValidation(rule);
 }
-

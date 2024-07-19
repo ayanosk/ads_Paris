@@ -47,19 +47,6 @@ function handlePersonManagement(e) {
   }
 
   // ここに、I列の値によってK列の値を調整する処理を入れたい（保留）
-
-  // O列のチェックボックスとF列の値が"報告者"の処理
-  if (sheet.getName() === "人物管理" && column === 15 && row >= 3) { // O列の変更を検出
-    const checkboxValue = range.getValue();
-    const fColumnValue = personSheet.getRange(`F${row}`).getValue();
-    if (checkboxValue === true && fColumnValue === "報告者") {
-      const bColumnValue = personSheet.getRange(`B${row}`).getValue();
-      const gColumnValue = personSheet.getRange(`G${row}`).getValue();
-      updateInitialResearchReport(initialResearchReportSheet, bColumnValue, gColumnValue);
-    }
-  }
-
-
 }
 
 // ここから個別関数

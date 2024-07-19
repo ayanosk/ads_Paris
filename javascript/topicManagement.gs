@@ -11,17 +11,6 @@ function handleTopicManagement(e) {
     copyValue(sheet, 'L2', `L${row}`); // L2の値をL列の編集行にコピー
   }
 
-  // B列とC列の両方に値が入力されている場合にA列にトピックIDを設定
-  const dateValue = sheet.getRange(row, 2).getValue();
-  const numericValue = sheet.getRange(row, 3).getValue();
-
-  /*
-  if (dateValue && numericValue) {
-    const topicID = generateTopicID(dateValue, numericValue);
-    sheet.getRange(row, 1).setValue(topicID);
-  }
-  */
-
   if (row >= 3) {
     // B列とC列の両方に値が入力されている場合にA列にトピックIDを設定
     const dateValue = sheet.getRange(row, 2).getValue();
@@ -41,36 +30,10 @@ function handleTopicManagement(e) {
     sheet.getRange(row, 5).setValue(eValue); // E列に値を設定
   }
 
-  // 入力済確認(M列)にチェックが入ったら共通メタデータを他のシートに送る
-  // 入力済確認(M列)にチェックが入ったら共通メタデータを他のシートに送る
-  if (column === 13) {
-    const status = sheet.getRange(row, 4).getValue(); // D列の値
-    if (sheet.getRange(row, 13).getValue() === true) { // M列のチェック
-      switch (status) {
-        case "出席":
-          sendData(sheet, row, ["A", "B", "G", "I"], "出席", ["A", "B", "C", "D"], "A");
-          break;
-        case "会員の任命":
-        case "制度改定":
-          sendData(sheet, row, ["A", "B", "G", "I", "B"], "会員の任命", ["A", "B", "C", "D", "E"], "A");
-          break;
-        case "投票・推薦":
-          sendData(sheet, row, ["A", "B", "G", "I"], "投票・推薦", ["A", "B", "C", "D"], "A");
-          break;
-        case "研究報告":
-        case "実験・提示":
-        case "査読依頼":
-        case "査読結果":
-          sendData(sheet, row, ["A", "B", "G", "I", "D"], "研究報告・実験・査読", ["A", "B", "C", "D", "E"], "A");
-          break;
-      }
-    }
-  }
-
 }
 
 
-// トピックIDを生成ルール
+// トピックIDを生成する
 function generateTopicID(dateValue, numericValue) {
   // 日付をYYYYMMDD形式に変換
   const formattedDate = Utilities.formatDate(new Date(dateValue), Session.getScriptTimeZone(), 'yyyyMMdd');
