@@ -1,3 +1,16 @@
+// この関数だけ実行する
+function forOpenrefine() {
+  Logger.log("=== 処理 開始 ===");
+
+  prepareORDataSheet();
+  insertColumnsAndPopulateValues();
+
+  Logger.log("=== 処理 完了 ===");
+}
+
+
+// 以下、補助関数
+
 function prepareORDataSheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sourceSheet = ss.getSheetByName("統合データ");
@@ -53,4 +66,38 @@ function prepareORDataSheet() {
   orSheet.getRange(1, 1, 1, newHeaders.length).setValues([newHeaders]);
 
   Logger.log("✅ OR用データシートが作成され、D列の表示形式を整数に設定しました。また指定された列の記号も削除済みです。");
+}
+
+function insertColumnsAndPopulateValues() {
+  const sheetName = "OR用データ";
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (!sheet) {
+    Logger.log(`シート「${sheetName}」が見つかりません`);
+    return;
+  }
+
+  // 1. A列の左に2列挿入
+  sheet.insertColumnsBefore(1, 2);
+
+  // 新しいA列とB列のヘッダーを設定
+  sheet.getRange("A1").setValue("ididid");
+  sheet.getRange("B1").setValue("line");
+
+  // データの行数を取得
+  const lastRow = sheet.getLastRow();
+
+  // D列（元のB列=2列目だったものが今D列=4列目）を取得
+  const dValues = sheet.getRange(2, 4, lastRow - 1).getValues();  // 2行目から
+  const idididValues = [];
+  const lineValues = [];
+
+  for (let i = 0; i < dValues.length; i++) {
+    const lineNum = (i + 2).toString(); // 2行目から開始
+    lineValues.push([lineNum]);
+    idididValues.push([dValues[i][0] + lineNum]);
+  }
+
+  // A列にididid（D列の値+B列の値）、B列にline（行番号）を設定
+  sheet.getRange(2, 1, idididValues.length).setValues(idididValues);
+  sheet.getRange(2, 2, lineValues.length).setValues(lineValues);
 }
